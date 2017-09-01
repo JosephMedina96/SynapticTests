@@ -1,0 +1,28 @@
+{
+  "name": "synaptic-tests",
+  "version": "1.0.0",
+  "description": "Uses the Synaptic node-module to test out neural networks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JosephMedina96/SynapticTests.git"
+  },
+  "keywords": [
+    "Test",
+    "Synaptic",
+    "Neural",
+    "Network"
+  ],
+  "author": "A Guy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JosephMedina96/SynapticTests/issues"
+  },
+  "homepage": "https://github.com/JosephMedina96/SynapticTests#readme",
+  "dependencies": {
+    "synaptic": "^1.1.1"
+  }
+}
