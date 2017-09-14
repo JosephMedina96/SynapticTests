@@ -5,6 +5,7 @@ A repository testing out the Synaptic library, intended for neural networks.
 **Synaptic:** https://github.com/cazala/synaptic
 
 ============================================================================
+
 To use any file:
 1. Go to the desired folder (*each folder contains one test*).
 2. Open the html file associated with that folder.
