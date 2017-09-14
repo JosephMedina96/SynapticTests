@@ -2,8 +2,45 @@
 <html>
 	<body>
 
-		<h1>This is a test webpage.</h1>
-		<p>Hopefully this works.</p>
+		<h1>About the pop-ups...</h1>
+		<p>Each of those was a test of a neural network that was designed to figure out XOR patterns.</p>
+
+		<p>Test A was [0,0], which is not exclusive.</p>
+		<p>Test B was [1,0], which is exclusive.</p>
+		<p>Test B was [0,1], which is exclusive.</p>
+		<p>Test D was [1,1], which is not exclusive.</p>
+
+		<p>The network was able to accurately learn the pattern based on the limited training set it was given.</p>
+
+		<p>For those interested in the code that is being tested:</p>
+		<pre><code>		var testA = myPerceptron.activate([0,0]);
+		var testB = myPerceptron.activate([1,0]);
+		var testC = myPerceptron.activate([0,1]);
+		var testD = myPerceptron.activate([1,1]);
+
+		if (Math.round(testA) == 0) {
+		  alert("Test A is correct.");
+		} else {
+		  alert("Test A is incorrect, more training required.");
+		}
+
+		if (Math.round(testB) == 1) {
+		  alert("Test B is correct.");
+		} else {
+		  alert("Test B is incorrect, more training required.");
+		}
+
+		if (Math.round(testC) == 1) {
+		  alert("Test C is correct.");
+		} else {
+		  alert("Test C is incorrect, more training required.");
+		}
+
+		if (Math.round(testD) == 0) {
+		  alert("Test D is correct.");
+		} else {
+		  alert("Test D is incorrect, more training required.");
+		}</code></pre>
 
 		<script src="../DemoSynaptic/DemoSynapticWeb.js"></script>
 

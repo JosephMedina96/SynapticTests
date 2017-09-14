@@ -51,10 +51,34 @@ var trainingSet = [
 
 myTrainer.train(trainingSet);
 
-alert(myPerceptron.activate([0,0])); // 0.0268581547421616
-alert(myPerceptron.activate([1,0])); // 0.9829673642853368
-alert(myPerceptron.activate([0,1])); // 0.9831714267395621
-alert(myPerceptron.activate([1,1])); // 0.02128894618097928
+var testA = myPerceptron.activate([0,0]);
+var testB = myPerceptron.activate([1,0]);
+var testC = myPerceptron.activate([0,1]);
+var testD = myPerceptron.activate([1,1]);
+
+if (Math.round(testA) == 0) {
+  alert("Test A is correct.");
+} else {
+  alert("Test A is incorrect, more training required.");
+}
+
+if (Math.round(testB) == 1) {
+  alert("Test B is correct.");
+} else {
+  alert("Test B is incorrect, more training required.");
+}
+
+if (Math.round(testC) == 1) {
+  alert("Test C is correct.");
+} else {
+  alert("Test C is incorrect, more training required.");
+}
+
+if (Math.round(testD) == 0) {
+  alert("Test D is correct.");
+} else {
+  alert("Test D is incorrect, more training required.");
+}
 
 },{"synaptic":2}],2:[function(require,module,exports){
 /*!
