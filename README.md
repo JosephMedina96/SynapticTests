@@ -4,6 +4,10 @@ A repository testing out the Synaptic library, intended for neural networks.
 
 **Synaptic:** https://github.com/cazala/synaptic
 
+**EDIT:** Found an extension library which is built on synaptic called neataptic.
+
+**Neataptic:** https://github.com/wagenaartje/neataptic
+
 ============================================================================
 
 To use any file:
