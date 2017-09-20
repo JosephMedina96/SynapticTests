@@ -1,10 +1,8 @@
-A repository testing out the Synaptic library, intended for neural networks.
+A repository testing out the Synaptic and Neataptic libraries, intended for neural networks.
 
-**Synaptic is not owned by me, all rights go to their respective owners.**
+**Synaptic and Neataptic are not owned by me, all rights go to their respective owners.**
 
 **Synaptic:** https://github.com/cazala/synaptic
-
-**EDIT:** Found an extension library which is built on synaptic called neataptic.
 
 **Neataptic:** https://github.com/wagenaartje/neataptic
 
