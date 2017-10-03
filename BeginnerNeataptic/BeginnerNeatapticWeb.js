@@ -9,10 +9,22 @@
 // Imports the Synaptic Module into the project
 var neataptic = require('neataptic');
 
+// For Later:
+String.prototype.hashCode = function () {
+  var hash = 0;
+  if (this.length == 0) return hash;
+  for (var i = 0; i < this.length; i++) {
+    character = this.charCodeAt(i);
+    hash = ((hash<<5)-hash)+character;
+    hash = hash & hash; //Convert to 32-bit integer
+  }
+  return hash;
+}
+
 // For Network:
-var inputLayer = new neataptic.Layer.Dense(5);    // Layer includes 5 Neurons
-var hiddenLayer = new neataptic.Layer.LSTM(4);   // Layer includes 4 Neurons
-var outputLayer = new neataptic.Layer.Dense(2);   // Layer includes 2 Neurons
+var inputLayer = new neataptic.Layer.Dense(55);    // Layer includes 55 Neurons
+var hiddenLayer = new neataptic.Layer.LSTM(24);   // Layer includes 24 Neurons
+var outputLayer = new neataptic.Layer.Dense(1);   // Layer includes 1 Neurons
 
 inputLayer.connect(hiddenLayer);  // Connects inputs to the hidden layer
 hiddenLayer.connect(outputLayer); // Connects the hidden layer to output
@@ -46,36 +58,50 @@ var interjections = "ouch! wow! oops! hey! no!";
 	=====================================================================
 */
 inanimateNouns = inanimateNouns.toLowerCase();
+inanimateNouns.hashCode();
+alert(inanimateNouns.hashCode());
 var inanimateNounSet = inanimateNouns.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 animateNouns = animateNouns.toLowerCase();
+animateNouns.hashCode();
+alert(animateNouns.hashCode());
 var animateNounSet = animateNouns.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 pronouns = pronouns.toLowerCase();
+pronouns.hashCode();
+alert(pronouns.hashCode());
 var pronounSet = pronouns.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 presentVerbs = presentVerbs.toLowerCase();
+presentVerbs.hashCode();
 var presentVerbSet = presentVerbs.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 pastVerbs = pastVerbs.toLowerCase();
+pastVerbs.hashCode();
 var pastVerbSet = pastVerbs.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 colorAdjectives = colorAdjectives.toLowerCase();
+colorAdjectives.hashCode();
 var colorAdjectiveSet = colorAdjectives.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 textureAdjectives = textureAdjectives.toLowerCase();
+textureAdjectives.hashCode();
 var textureAdjectiveSet = textureAdjectives.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 adverbs = adverbs.toLowerCase();
+adverbs.hashCode();
 var adverbSet = adverbs.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 prepositions = prepositions.toLowerCase();
+prepositions.hashCode();
 var prepositionSet = prepositions.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 conjunctions = conjunctions.toLowerCase();
+conjunctions.hashCode();
 var conjunctionSet = conjunctions.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 interjections = interjections.toLowerCase();
+interjections.hashCode();
 var interjectionSet = interjections.split("").filter(function(item, i, ar){ return ar.indexOf(item) === i; });
 
 // *One-hot Encoding*
@@ -292,6 +318,7 @@ for (var i = 1; i < interjections.length; i++) {
 */
 var learningRate = .3;
 network.train(trainingSet, {
+  batchSize: 55,
 	clear: true
 });
 
@@ -2198,7 +2225,7 @@ Network.prototype = {
   /**
    * Evolves the network to reach a lower error on a dataset
    */
-  evolve: async function (set, options) {
+  evolve: function (set, options) {
     if (set[0].input.length !== this.input || set[0].output.length !== this.output) {
       throw new Error('Dataset input/output size should be same as network input/output size!');
     }
@@ -2301,7 +2328,7 @@ Network.prototype = {
     var bestGenome;
 
     while (error < -targetError && (options.iterations === 0 || neat.generation < options.iterations)) {
-      let fittest = await neat.evolve();
+      let fittest = /*await*/ neat.evolve();
       let fitness = fittest.score;
       error = fitness + (fittest.nodes.length - fittest.input - fittest.output + fittest.connections.length + fittest.gates.length) * growth;
 
@@ -3903,10 +3930,10 @@ Neat.prototype = {
   /**
    * Evaluates, selects, breeds and mutates population
    */
-  evolve: async function () {
+  evolve: function () {
     // Check if evaluated, sort the population
     if (typeof this.population[this.population.length - 1].score === 'undefined') {
-      await this.evaluate();
+      this.evaluate();
     }
     this.sort();
 
@@ -4000,19 +4027,19 @@ Neat.prototype = {
   /**
    * Evaluates the current population
    */
-  evaluate: async function () {
+  evaluate: function () {
     if (this.fitnessPopulation) {
       if (this.clear) {
         for (var i = 0; i < this.population.length; i++) {
           this.population[i].clear();
         }
       }
-      await this.fitness(this.population);
+      this.fitness(this.population);
     } else {
       for (var i = 0; i < this.population.length; i++) {
         var genome = this.population[i];
         if (this.clear) genome.clear();
-        genome.score = await this.fitness(genome);
+        genome.score = this.fitness(genome);
       }
     }
   },
