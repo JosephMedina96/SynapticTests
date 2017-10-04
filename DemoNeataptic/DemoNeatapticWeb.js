@@ -19,6 +19,10 @@ String.prototype.hashCode = function () {
   return hash;
 }
 
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+  return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 /*
   =============================================================
             CREATION OF DATA SET
@@ -56,7 +60,7 @@ var data = "paper nail stapler chair house boy girl cat dog tree he she his thei
 var dataSet = data.split(" ");
 
 // DEBUG
-alert("Data Set: " + dataSet);
+// alert("Data Set: " + dataSet);
 
 // Onehot Encoding
 /*
@@ -65,6 +69,8 @@ alert("Data Set: " + dataSet);
   numbers.
   ==============================================================
 */
+
+/*
 var onehot = {};
 
 for (var i = 0; i < dataSet.length; i++) {
@@ -74,6 +80,7 @@ for (var i = 0; i < dataSet.length; i++) {
   var item = dataSet[i];
   onehot[item] = zeros;
 }
+*/
 
 // Categorize the data using predetermined categories
 var finalDataSet = [];
@@ -130,8 +137,7 @@ for (var i = 1; i < dataSet.length; i++) {
 }
 
 // DEBUG
-alert("Final Data Set Size: " + finalDataSet.length);
-alert("Final Data Set: " + finalDataSet);
+// alert("Final Data Set Size: " + finalDataSet.length);
 
 /*
   =============================================================
@@ -157,11 +163,105 @@ var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, output
 */
 
 network.train(finalDataSet, {
-  log: 10,
-  error: 0.03,
-  iterations: 1000,
-  rate: 0.3
+  log: 10,          // Logs the activity of the network every x iterations
+  error: 0.03,      // The desired error state
+  iterations: 100,  // Runs the training data through the network x times
+  rate: 0.3         // The speed of training
 });
+
+/*
+  =============================================================
+            TESTING OF NETWORK
+  =============================================================
+*/
+
+// Test variables
+var test1 = "he";
+var test2 = "blue";
+var test3 = "nail";
+
+// Raw results
+var preResult1 = network.activate([test1.hashCode()]);
+var preResult2 = network.activate([test2.hashCode()]);
+var preResult3 = network.activate([test3.hashCode()]);
+
+// Assigns each part of the pre-results to 1 or 0
+function categorizeResult (preResults) {
+
+  var results = [];
+
+  for (var i = 0; i < preResults.length; i++) {
+    var set = preResults[i];
+    var item = set.map(-1, 10, 0, 1);
+
+
+    results.push(Math.round(item));
+
+    // DEBUG
+    alert(results);
+  }
+
+  return results;
+}
+
+// Displays the category that the system thinks the word fits in
+function displayResult (test, results) {
+
+  if (results == [1,0,0,0,0,0,0,0]) {
+
+    alert("The system thinks that " + test + " is a noun.");
+
+  } else if (results == [0,1,0,0,0,0,0,0]) {
+
+    alert("The system thinks that " + test + " is a pronoun.");
+
+  } else if (results == [0,0,1,0,0,0,0,0]) {
+
+    alert("The system thinks that " + test + " is a verb.");
+
+  } else if (results == [0,0,0,1,0,0,0,0]) {
+
+    alert("The system thinks that " + test + " is an adverb.");
+
+  } else if (results == [0,0,0,0,1,0,0,0]) {
+
+    alert("The system thinks that " + test + " is an adjective.");
+
+  } else if (results == [0,0,0,0,0,1,0,0]) {
+
+    alert("The system thinks that " + test + " is a conjunction.");
+
+  } else if (results == [0,0,0,0,0,0,1,0]) {
+
+    alert("The system thinks that " + test + " is a preposition.");
+
+  } else if (results == [0,0,0,0,0,0,0,1]) {
+
+    alert("The system thinks that " + test + " is an interjection.");
+
+  } else {
+
+    alert("The system has failed to identify this word's category.");
+
+  }
+}
+
+// Categorized results
+var result1 = categorizeResult(preResult1);
+var result2 = categorizeResult(preResult2);
+var result3 = categorizeResult(preResult3);
+
+// Shows what the system classified the words as and the actual category
+displayResult(test1, result1);
+alert("The actual category for " + test1 + " is pronoun.");
+
+displayResult(test2, result2);
+alert("The actual category for " + test2 + " is adjective.");
+
+displayResult(test3, result3);
+alert("The actual category for " + test3 + " is noun.");
+
+// ================================================================
 
 },{"neataptic":23}],2:[function(require,module,exports){
 /* Import */
