@@ -1,159 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*
-  Demo Neataptic.
-  Pretty Basic.
+  Proof of Concept
 */
 
 // Imports Neataptic
 var neataptic = require('neataptic');
-
-// For Later:
-// String.prototype.hashCode: Returns a number from a string
-String.prototype.hashCode = function () {
-  var hash = 0;
-  if (this.length == 0) return hash;
-  for (var i = 0; i < this.length; i++) {
-    character = this.charCodeAt(i);
-    hash = ((hash<<5)-hash)+character;
-    hash = hash & hash; //Convert to 32-bit integer
-  }
-  return hash;
-}
-
-// Number.prototype.map: Maps numbers from one range to a new range
-Number.prototype.map = function (in_min, in_max, out_min, out_max) {
-  return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-// Array.prototype.compareArray: Compares two arrays
-Array.prototype.compareArray = function (array) {
-  if (!array) return false;
-  if (this.length != array.length) return false;
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] instanceof Array && array[i] instanceof Array) {
-      if (!this[i].compare(array[i])) return false;
-    } else if (this[i] != array[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/*
-  =============================================================
-            CREATION OF DATA SET
-  =============================================================
-*/
-
-// Data Set Categories
-/*
-  =============================================================
-  These will be outputs to the data for easier classification.
-  =============================================================
-*/
-var noun = [1, 0, 0, 0, 0, 0, 0, 0];     // Category #1
-var pronoun = [0, 1, 0, 0, 0, 0, 0, 0];    // Category #2
-var verb = [0, 0, 1, 0, 0, 0, 0, 0];     // Category #3
-var adverb = [0, 0, 0, 1, 0, 0, 0, 0];     // Category #4
-var adjective = [0, 0, 0, 0, 1, 0, 0, 0];  // Category #5
-var conjunction = [0, 0, 0, 0, 0, 1, 0, 0];  // Category #6
-var preposition = [0, 0, 0, 0, 0, 0, 1, 0];  // Category #7
-var interjection = [0, 0, 0, 0, 0, 0, 0, 1]; // Category #8
-var blank = [];                           // Blank Category
-
-// Data Set Items
-/*
-  =============================================================
-  Starting with a string, each item will be classified using
-  one of the above categories. All items of a certain type will
-  be lumped together for ease of labelling.
-  =============================================================
-*/
-
-var data = "paper nail stapler chair house boy girl cat dog tree he she his theirs mine running jumping swimming dancing hiding shoved placed stung ran fled accidentally fiercely soon victoriously easily red orange yellow green blue rough soft bumpy chalky scaly and yet but for so above below behind down in ouch! wow! oops! hey! no!";
-
-// Splits the string into an array of words
-var dataSet = data.split(" ");
-
-// DEBUG
-// alert("Data Set: " + dataSet);
-
-// Onehot Encoding
-/*
-  ==============================================================
-  One-hot encoding is the act of mapping letters / words to 
-  numbers.
-  ==============================================================
-*/
-
-/*
-var onehot = {};
-
-for (var i = 0; i < dataSet.length; i++) {
-  var zeros = Array.apply(null, Array(dataSet)).map(Number.prototype.valueOf, 0);
-  zeros[i] = 1;
-
-  var item = dataSet[i];
-  onehot[item] = zeros;
-}
-*/
-
-// Categorize the data using predetermined categories
-var finalDataSet = [];
-
-var previous = dataSet[0];
-for (var i = 1; i < dataSet.length; i++) {
-  var blankData = dataSet[i-1].hashCode()/10000000000;
-  var next = dataSet[i];
-
-  if (blankData < 0) {blankData = blankData * -1}
-  blank.push(blankData); // Add data for classification
-
-  // DEBUG
-  // alert("Blank: " + blank);
-
-  // Categorize data
-  // ===========================================================
-  if (i <= 10) { // Nouns
-
-    finalDataSet.push({ input: [blank], output: [1,0,0,0,0,0,0,0]});
-
-  } else if (i > 10 && i <= 15) { // Pronouns
-
-    finalDataSet.push({ input: [blank], output: [0,1,0,0,0,0,0,0]});
-
-  } else if (i > 15 && i <= 25) { // Verbs
-
-    finalDataSet.push({ input: [blank], output: [0,0,1,0,0,0,0,0]});
-
-  } else if (i > 25 && i <= 30) { // Adverbs
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,1,0,0,0,0]});
-
-  } else if (i > 30 && i <= 40) { // Adjectives
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,1,0,0,0]});
-
-  } else if (i > 40 && i <= 45) { // Conjunctions
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,1,0,0]});
-
-  } else if (i > 45 && i <= 50) { // Prepositions
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,0,1,0]});
-
-  } else { // Interjections
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,0,0,1]});
-
-  }
-  // ==========================================================
-  blank.pop(); // Prepares data slot for next piece of data
-  previous = next;
-}
-
-// DEBUG
-// alert("Final Data Set Size: " + finalDataSet.length);
 
 /*
   =============================================================
@@ -162,9 +13,9 @@ for (var i = 1; i < dataSet.length; i++) {
 */
 
 // For network:
-var inputLayer = new neataptic.Layer.Dense(1);
-var hiddenLayer = new neataptic.Layer.Dense(9);
-var outputLayer = new neataptic.Layer.Dense(8);
+var inputLayer = new neataptic.Layer.Dense(2);
+var hiddenLayer = new neataptic.Layer.Dense(3);
+var outputLayer = new neataptic.Layer.Dense(1);
 
 inputLayer.connect(hiddenLayer);   // Connects inputs to the hidden layer
 hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
@@ -174,12 +25,25 @@ var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, output
 
 /*
   =============================================================
-            TRAINING OF NETWORK
+            CREATION OF DATA SET
   =============================================================
 */
 
-network.train(finalDataSet, {
-  log: 10,          // Logs the activity of the network every x iterations
+var dataSet = [
+  { input: [0, 0], output: [0] },
+  { input: [0, 1], output: [1] },
+  { input: [1, 0], output: [1] },
+  { input: [1, 1], output: [0] }
+];
+
+/*
+  =============================================================
+            TRAINING THE NETWORK
+  =============================================================
+*/
+
+network.train(dataSet, {
+  log: 100,          // Logs the activity of the network every x iterations
   error: 0.03,      // The desired error state
   iterations: 10000, // Runs the training data through the network x times
   rate: 0.3         // The speed of training
@@ -187,157 +51,34 @@ network.train(finalDataSet, {
 
 /*
   =============================================================
-            TESTING OF NETWORK
+            TESTING THE NETWORK
   =============================================================
 */
 
-// Test variables
-var test1 = "he";
-var test2 = "blue";
-var test3 = "nail";
-
-// Raw results
-var preResult1 = network.activate([test1.hashCode()]);
-var preResult2 = network.activate([test2.hashCode()]);
-var preResult3 = network.activate([test3.hashCode()]);
-
-// Assigns each part of the pre-results to 1 or 0
-function categorizeResult (preResults) {
-
-  var results = [];
-  var highest;
-
-  // Map the results between 0 and 1
-  for (var i = 0; i < preResults.length; i++) {
-    var set = preResults[i];
-    var item = set.map(-9.5, 10, 0, 1);
-
-    results.push(item);
-
-    // DEBUG
-    // alert(item);
-  }
-
-  // Find the highest value
-  for (var i = 1; i < results.length; i++) {
-    var previous = results[i-1];
-    var current = results[i];
-    
-    if (current > previous) {
-
-      highest = current;
-
-    } else if (previous >= current) {
-
-      highest = previous;
-
-    } else {
-      // Nothing
-    }
-  }
-
-  // Set only the highest value to 1, and all others to 0
-  for (var i = 0; i < results.length; i++) {
-    if (results[i] == highest) {
-      results[i] = 1;
-    } else {
-      results[i] = 0;
-    }
-  }
-
+function writeResult (input1, input2) {
+  var mutEx;
+  var result = Math.round(network.activate([input1, input2]));
+  
   // DEBUG
-  // alert(results);
+  // alert(result)
 
-  return results;
-}
-
-// Displays the category that the system thinks the word fits in
-function displayResult (test, results) {
-
-  if (results.compareArray([1,0,0,0,0,0,0,0])) {
-
-    alert("The system thinks that " + test + " is a noun.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is a noun.";
-    document.getElementById('result').style.color = "red";
-
-  } else if (results.compareArray([0,1,0,0,0,0,0,0])) {
-
-    alert("The system thinks that " + test + " is a pronoun.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is a pronoun.";
-    document.getElementById('result').style.color = "orange";
-
-  } else if (results.compareArray([0,0,1,0,0,0,0,0])) {
-
-    alert("The system thinks that " + test + " is a verb.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is a verb.";
-    document.getElementById('result').style.color = "yellow";
-
-  } else if (results.compareArray([0,0,0,1,0,0,0,0])) {
-
-    alert("The system thinks that " + test + " is an adverb.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is an adverb.";
-    document.getElementById('result').style.color = "green";
-
-  } else if (results.compareArray([0,0,0,0,1,0,0,0])) {
-
-    alert("The system thinks that " + test + " is an adjective.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is an adjective.";
-    document.getElementById('result').style.color = "blue";
-
-  } else if (results.compareArray([0,0,0,0,0,1,0,0])) {
-
-    alert("The system thinks that " + test + " is a conjunction.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is a conjunction.";
-    document.getElementById('result').style.color = "indigo";
-
-  } else if (results.compareArray([0,0,0,0,0,0,1,0])) {
-
-    alert("The system thinks that " + test + " is a preposition.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is a preposition.";
-    document.getElementById('result').style.color = "violet";
-
-  } else if (results.compareArray([0,0,0,0,0,0,0,1])) {
-
-    alert("The system thinks that " + test + " is an interjection.");
-    document.getElementById('result').innerHTML = "The system thinks that " + test + " is an interjection.";
-    document.getElementById('result').style.color = "brown";
-
+  if (result == 0) {
+    mutEx = "not mutually exclusive.";
+  } else if (result == 1) {
+    mutEx = "mutually exclusive.";
   } else {
-
-    alert("The system has failed to identify this word's category.");
-    document.getElementById('result').innerHTML = "The system has failed to identify this word's category.";
-    document.getElementById('result').style.color = "black";
-
+    mutEx = "not defined by this system.";
   }
+
+  document.getElementById('result').innerHTML = "Result: The system thinks that [" + input1 + ", " + input2 + "] is " + mutEx;
 }
-
-// Categorized results
-var result1 = categorizeResult(preResult1);
-var result2 = categorizeResult(preResult2);
-var result3 = categorizeResult(preResult3);
-
-// DEBUG
-// alert(result1);
-
-// Shows what the system classified the words as and the actual category
-displayResult(test1, result1);
-alert("The actual category for " + test1 + " is pronoun.");
-
-displayResult(test2, result2);
-alert("The actual category for " + test2 + " is adjective.");
-
-displayResult(test3, result3);
-alert("The actual category for " + test3 + " is noun.");
-
-document.getElementById('result').innerHTML = "";
-document.body.style.color = "black";
 
 // For Future Tests:
-testForPart = function () {
-  var data = document.getElementById('value').value;
-  var preResult = network.activate([data.hashCode()]);
-  var result = categorizeResult(preResult);
-  displayResult(data, result);
+test = function () {
+  var input1 = document.getElementById('value1').value;
+  var input2 = document.getElementById('value2').value;
+
+  writeResult(input1, input2);
 }
 
 // ================================================================

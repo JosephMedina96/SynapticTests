@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<body>
+
+		<h1>This is a test webpage.</h1>
+		<h2>This page is dedicated to a proof of concept.</h2>
+
+		<p></p>
+
+		<p>Please enter two numbers in the fields below, then hit send.</p>
+
+		<input type="text" maxlength="24" name="value" id="value1"/>
+		<input type="text" maxlength="24" name="value" id="value2"/>
+		<input type="button" value="Send" onclick="test()"/>
+
+		<p id="result">Result:</p>
+
+		<h2>Proof-Of-Concept Code:</h2>
+		<pre><code>/*
+  Proof of Concept
+*/
+
+// Imports Neataptic
+var neataptic = require('neataptic');
+
+/*
+  =============================================================
+            CREATION OF NETWORK
+  =============================================================
+*/
+
+// For network:
+var inputLayer = new neataptic.Layer.Dense(2);
+var hiddenLayer = new neataptic.Layer.Dense(3);
+var outputLayer = new neataptic.Layer.Dense(1);
+
+inputLayer.connect(hiddenLayer);   // Connects inputs to the hidden layer
+hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
+
+// Network itself:
+var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, outputLayer]);
+
+/*
+  =============================================================
+            CREATION OF DATA SET
+  =============================================================
+*/
+
+var dataSet = [
+  { input: [0, 0], output: [0] },
+  { input: [0, 1], output: [1] },
+  { input: [1, 0], output: [1] },
+  { input: [1, 1], output: [0] }
+];
+
+/*
+  =============================================================
+            TRAINING THE NETWORK
+  =============================================================
+*/
+
+network.train(dataSet, {
+  log: 100,          // Logs the activity of the network every x iterations
+  error: 0.03,      // The desired error state
+  iterations: 10000, // Runs the training data through the network x times
+  rate: 0.3         // The speed of training
+});
+
+/*
+  =============================================================
+            TESTING THE NETWORK
+  =============================================================
+*/
+
+function writeResult (input1, input2) {
+  var mutEx;
+  var result = Math.round(network.activate([input1, input2]));
+  
+  // DEBUG
+  // alert(result)
+
+  if (result == 0) {
+    mutEx = "not mutually exclusive.";
+  } else if (result == 1) {
+    mutEx = "mutually exclusive.";
+  } else {
+    mutEx = "not defined by this system.";
+  }
+
+  document.getElementById('result').innerHTML = "The system thinks that [" + input1 + ", " + input2 + "] is " + mutEx;
+}
+
+// For Future Tests:
+test = function () {
+  var input1 = document.getElementById('value1').value;
+  var input2 = document.getElementById('value2').value;
+
+  writeResult(input1, input2);
+}
+
+// ================================================================
+</code></pre>
+
+		<script src="../Proof-Of-Concept/POCWeb.js"></script>
+
+	</body>
+</html>
