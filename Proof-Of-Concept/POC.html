@@ -14,6 +14,7 @@
 		<input type="button" value="Send" onclick="test()"/>
 
 		<p id="result">Result:</p>
+		<p id="check">Actual:</p>
 
 		<h2>Proof-Of-Concept Code:</h2>
 		<pre><code>/*
@@ -87,7 +88,17 @@ function writeResult (input1, input2) {
     mutEx = "not defined by this system.";
   }
 
-  document.getElementById('result').innerHTML = "The system thinks that [" + input1 + ", " + input2 + "] is " + mutEx;
+  document.getElementById('result').innerHTML = "Result: The system thinks that [" + input1 + ", " + input2 + "] is " + mutEx;
+}
+
+function checkResult (input1, input2) {
+  if (input1 == input2) {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is not mutually exclusive.";
+  } else if (input1 != input2) {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is mutually exclusive.";
+  } else {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is not defined by this system.";
+  }
 }
 
 // For Future Tests:
@@ -96,10 +107,12 @@ test = function () {
   var input2 = document.getElementById('value2').value;
 
   writeResult(input1, input2);
+  checkResult(input1, input2);
 }
 
 // ================================================================
-</code></pre>
+
+		</code></pre>
 
 		<script src="../Proof-Of-Concept/POCWeb.js"></script>
 

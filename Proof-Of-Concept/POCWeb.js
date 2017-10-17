@@ -73,12 +73,23 @@ function writeResult (input1, input2) {
   document.getElementById('result').innerHTML = "Result: The system thinks that [" + input1 + ", " + input2 + "] is " + mutEx;
 }
 
+function checkResult (input1, input2) {
+  if (input1 == input2) {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is not mutually exclusive.";
+  } else if (input1 != input2) {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is mutually exclusive.";
+  } else {
+    document.getElementById('check').innerHTML = "Actual: The actual state of [" + input1 + ", " + input2 + "] is not defined by this system.";
+  }
+}
+
 // For Future Tests:
 test = function () {
   var input1 = document.getElementById('value1').value;
   var input2 = document.getElementById('value2').value;
 
   writeResult(input1, input2);
+  checkResult(input1, input2);
 }
 
 // ================================================================
