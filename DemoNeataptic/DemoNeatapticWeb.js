@@ -320,16 +320,16 @@ var result3 = categorizeResult(preResult3);
 // alert(result1);
 
 // Shows what the system classified the words as and the actual category
-displayResult(test1, result1);
-alert("The actual category for " + test1 + " is pronoun.");
+// displayResult(test1, result1);
+// alert("The actual category for " + test1 + " is pronoun.");
 
-displayResult(test2, result2);
-alert("The actual category for " + test2 + " is adjective.");
+// displayResult(test2, result2);
+// alert("The actual category for " + test2 + " is adjective.");
 
-displayResult(test3, result3);
-alert("The actual category for " + test3 + " is noun.");
+// displayResult(test3, result3);
+// alert("The actual category for " + test3 + " is noun.");
 
-document.getElementById('result').innerHTML = "";
+document.getElementById('result').innerHTML = "[Result]";
 document.body.style.color = "black";
 
 // For Future Tests:
@@ -338,6 +338,54 @@ testForPart = function () {
   var preResult = network.activate([data.hashCode()]);
   var result = categorizeResult(preResult);
   displayResult(data, result);
+}
+
+userTrain = function () {
+  var nounBox = document.getElementById('noun').checked;
+  var pronounBox = document.getElementById('pronoun').checked;
+  var verbBox = document.getElementById('verb').checked;
+  var adverbBox = document.getElementById('adverb').checked;
+  var adjectiveBox = document.getElementById('adjective').checked;
+  var conjunctionBox = document.getElementById('conjunction').checked;
+  var prepositionBox = document.getElementById('preposition').checked;
+  var interjectionBox = document.getElementById('interjection').checked;
+
+  // DEBUG
+  // alert(nounBox);
+
+  var input = document.getElementById('data').value;
+  var modifiedInput = input.hashCode()/10000000000;
+  var output = [
+    nounBox, 
+    pronounBox, 
+    verbBox, 
+    adverbBox, 
+    adjectiveBox, 
+    conjunctionBox,
+    prepositionBox,
+    interjectionBox
+  ];
+
+  for (var i = 0; i < output.length; i++) {
+    if (output[i] == true) {
+      output[i] = 1;
+    } else {
+      output[i] = 0;
+    }
+  }
+
+  // DEBUG
+  // alert(modifiedInput);
+  // alert(output);
+
+  var trainingData = [{ input: [modifiedInput], output: output }];
+
+  network.train(trainingData, {
+    log: 10,          // Logs the activity of the network every x iterations
+    error: 0.03,      // The desired error state
+    iterations: 1000, // Runs the training data through the network x times
+    rate: 0.3         // The speed of training
+  })
 }
 
 // ================================================================

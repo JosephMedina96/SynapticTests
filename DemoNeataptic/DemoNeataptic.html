@@ -2,13 +2,60 @@
 <html>
 	<body>
 
-		<h1>Enter text here</h1>
+		<h1>Enter a word here</h1>
 		<h2>then press send.</h2>
 
 		<input type="text" maxlength="24" name="value" id="value"/>
 		<input type="button" value="Send" onclick="testForPart()"/>
 
-		<p id="result"></p>
+		<p id="result">[Result]</p>
+
+		<h2>Manual Training</h2>
+		<p>If you didn't get the result that you wanted, you can try</p>
+		<p>training the system yourself. Just type the word you want</p>
+		<p>to be learned, pick a category, then press send.</p>
+
+		<p>---------------------------------------------------------</p>
+
+		<p>You can test the training in the section above.</p>
+
+		<input type="text" maxlength="24" name="value" id="data"/>
+		<fieldset>
+			<legend>Part of speech</legend>
+			<div>
+				<input type="checkbox" name="partofspeech" id="noun"/>
+				<label for="noun">Noun</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="pronoun"/>
+				<label for="pronoun">Pronoun</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="verb"/>
+				<label for="verb">Verb</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="adverb"/>
+				<label for="adverb">Adverb</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="adjective"/>
+				<label for="adjective">Adjective</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="conjunction"/>
+				<label for="conjunction">Conjunction</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="preposition"/>
+				<label for="preposition">Preposition</label>
+			</div>
+			<div>
+				<input type="checkbox" name="partofspeech" id="interjection"/>
+				<label for="interjection">Interjection</label>
+			</div>
+		</fieldset>
+		<input type="button" value="Send" onclick="userTrain()"/>
 
 		<script src="../DemoNeataptic/DemoNeatapticWeb.js"></script>
 
