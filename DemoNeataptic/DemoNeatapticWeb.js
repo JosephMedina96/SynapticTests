@@ -70,32 +70,33 @@ var blank = [];                           // Blank Category
   =============================================================
 */
 
-// var data = "paper nail stapler chair house boy girl cat dog tree he she his theirs mine running jumping swimming dancing hiding shoved placed stung ran fled accidentally fiercely soon victoriously easily red orange yellow green blue rough soft bumpy chalky scaly and yet but for so above below behind down in ouch! wow! oops! hey! no!";
+var data = "paper nail stapler chair house boy girl cat dog tree he she his theirs mine running jumping swimming dancing hiding shoved placed stung ran fled accidentally fiercely soon victoriously easily red orange yellow green blue rough soft bumpy chalky scaly and yet but for so above below behind down in ouch! wow! oops! hey! no!";
 
 // Splits the string into an array of words
-var dataSet = [];
+var dataSet = data.split(" ");
 
-// Reads a text file containing the data
-document.getElementById('file').onchange = function(){
+// DEBUG
+// alert("Data Set: " + dataSet);
 
-  var file = this.files[0];
-  var reader = new FileReader();
-  reader.readAsText(file);
-  reader.onload = function () {
-    // Entire file
-    console.log(this.result);
+// Onehot Encoding
+/*
+  ==============================================================
+  One-hot encoding is the act of mapping letters / words to 
+  numbers.
+  ==============================================================
+*/
 
-    // By lines
-    var lines = this.result.split('\n');
-    for(var line = 0; line < lines.length; line++){
-      console.log(lines[line]);
-    }
-    dataSet.push(reader.result);
-  };
+/*
+var onehot = {};
 
-  // DEBUG
-  alert("Data Set: " + dataSet);
+for (var i = 0; i < dataSet.length; i++) {
+  var zeros = Array.apply(null, Array(dataSet)).map(Number.prototype.valueOf, 0);
+  zeros[i] = 1;
+
+  var item = dataSet[i];
+  onehot[item] = zeros;
 }
+*/
 
 // Categorize the data using predetermined categories
 var finalDataSet = [];
@@ -113,31 +114,31 @@ for (var i = 1; i < dataSet.length; i++) {
 
   // Categorize data
   // ===========================================================
-  if (i <= 50) { // Nouns
+  if (i <= 10) { // Nouns
 
     finalDataSet.push({ input: [blank], output: [1,0,0,0,0,0,0,0]});
 
-  } else if (i > 50 && i <= 75) { // Pronouns
+  } else if (i > 10 && i <= 15) { // Pronouns
 
     finalDataSet.push({ input: [blank], output: [0,1,0,0,0,0,0,0]});
 
-  } else if (i > 75 && i <= 125) { // Verbs
+  } else if (i > 15 && i <= 25) { // Verbs
 
     finalDataSet.push({ input: [blank], output: [0,0,1,0,0,0,0,0]});
 
-  } else if (i > 125 && i <= 150) { // Adverbs
+  } else if (i > 25 && i <= 30) { // Adverbs
 
     finalDataSet.push({ input: [blank], output: [0,0,0,1,0,0,0,0]});
 
-  } else if (i > 150 && i <= 200) { // Adjectives
+  } else if (i > 30 && i <= 40) { // Adjectives
 
     finalDataSet.push({ input: [blank], output: [0,0,0,0,1,0,0,0]});
 
-  } else if (i > 200 && i <= 225) { // Conjunctions
+  } else if (i > 40 && i <= 45) { // Conjunctions
 
     finalDataSet.push({ input: [blank], output: [0,0,0,0,0,1,0,0]});
 
-  } else if (i > 225 && i <= 250) { // Prepositions
+  } else if (i > 45 && i <= 50) { // Prepositions
 
     finalDataSet.push({ input: [blank], output: [0,0,0,0,0,0,1,0]});
 
