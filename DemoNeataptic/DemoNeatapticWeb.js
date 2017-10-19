@@ -172,34 +172,14 @@ hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
 // Network itself:
 var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, outputLayer]);
 
-/*
-  =============================================================
-            TRAINING OF NETWORK
-  =============================================================
-*/
-
-network.train(finalDataSet, {
-  log: 10,          // Logs the activity of the network every x iterations
-  error: 0.03,      // The desired error state
-  iterations: 10000, // Runs the training data through the network x times
-  rate: 0.3         // The speed of training
-});
+// Tells the script whether the network has been trained
+var isNotTrained = true;
 
 /*
   =============================================================
             TESTING OF NETWORK
   =============================================================
 */
-
-// Test variables
-var test1 = "he";
-var test2 = "blue";
-var test3 = "nail";
-
-// Raw results
-var preResult1 = network.activate([test1.hashCode()]);
-var preResult2 = network.activate([test2.hashCode()]);
-var preResult3 = network.activate([test3.hashCode()]);
 
 // Assigns each part of the pre-results to 1 or 0
 function categorizeResult (preResults) {
@@ -311,29 +291,29 @@ function displayResult (test, results) {
   }
 }
 
-// Categorized results
-var result1 = categorizeResult(preResult1);
-var result2 = categorizeResult(preResult2);
-var result3 = categorizeResult(preResult3);
-
-// DEBUG
-// alert(result1);
-
-// Shows what the system classified the words as and the actual category
-// displayResult(test1, result1);
-// alert("The actual category for " + test1 + " is pronoun.");
-
-// displayResult(test2, result2);
-// alert("The actual category for " + test2 + " is adjective.");
-
-// displayResult(test3, result3);
-// alert("The actual category for " + test3 + " is noun.");
-
 document.getElementById('result').innerHTML = "[Result]";
 document.body.style.color = "black";
 
 // For Future Tests:
 testForPart = function () {
+
+  if (isNotTrained) {
+    /*
+    =============================================================
+              TRAINING OF NETWORK
+    =============================================================
+    */
+
+    network.train(finalDataSet, {
+      log: 10,          // Logs the activity of the network every x iterations
+      error: 0.03,      // The desired error state
+      iterations: 10000, // Runs the training data through the network x times
+      rate: 0.3         // The speed of training
+    });
+
+    isNotTrained = false;
+  }
+
   var data = document.getElementById('value').value;
   var preResult = network.activate([data.hashCode()]);
   var result = categorizeResult(preResult);
@@ -378,14 +358,10 @@ userTrain = function () {
   // alert(modifiedInput);
   // alert(output);
 
-  var trainingData = [{ input: [modifiedInput], output: output }];
+  var trainingData = { input: [modifiedInput], output: output };
+  finalDataSet.push(trainingData);
 
-  network.train(trainingData, {
-    log: 10,          // Logs the activity of the network every x iterations
-    error: 0.03,      // The desired error state
-    iterations: 1000, // Runs the training data through the network x times
-    rate: 0.3         // The speed of training
-  })
+  alert(input + " has been added to the training set.");
 }
 
 // ================================================================

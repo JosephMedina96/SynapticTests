@@ -2,22 +2,31 @@
 <html>
 	<body>
 
-		<h1>Enter a word here</h1>
-		<h2>then press send.</h2>
+		<h1>Training / Testing</h1>
+		<h2>Basic Training / Testing</h2>
+		<p>If you want to test the system without modification, you can type the word you want to be tested in the field below and then press send.</p>
+		
+		<p>--------------------------------------------------------------------------------</p>
 
+		<h4>NOTE: The first time, pressing send will train the system. No more training can be conducted once the system has been trained, so use caution!</h4>
+		
 		<input type="text" maxlength="24" name="value" id="value"/>
 		<input type="button" value="Send" onclick="testForPart()"/>
 
 		<p id="result">[Result]</p>
 
+		<p>--------------------------------------------------------------------------------</p>
+
 		<h2>Manual Training</h2>
-		<p>If you didn't get the result that you wanted, you can try</p>
-		<p>training the system yourself. Just type the word you want</p>
-		<p>to be learned, pick a category, then press send.</p>
+		<p>If you want to train the result that you wanted, you can try training the system yourself. Just type the word you want to be learned, pick a category, then press send.</p>
+		
+		<p></p>
 
-		<p>---------------------------------------------------------</p>
+		<p>You can test the system in the section above.</p>
 
-		<p>You can test the training in the section above.</p>
+		<p>--------------------------------------------------------------------------------</p>
+
+		<h4>NOTE: Entering the same word multiple times may cause errors.</h4>
 
 		<input type="text" maxlength="24" name="value" id="data"/>
 		<fieldset>
