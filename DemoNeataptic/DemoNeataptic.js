@@ -8,6 +8,7 @@ var neataptic = require('neataptic');
 
 // Imports JQuery
 var $ = require("jQuery");
+$.ajaxSetup({async: false}); // Makes jQuery calls synchronous
 
 // For Later:
 // String.prototype.hashCode: Returns a number from a string
@@ -66,90 +67,132 @@ var blank = [];                           // Blank Category
 // Data Set Items
 /*
   =============================================================
-  Starting with a string, each item will be classified using
+  Starting with a data file, each item will be classified using
   one of the above categories. All items of a certain type will
   be lumped together for ease of labelling.
   =============================================================
 */
 
-// var data = "paper nail stapler chair house boy girl cat dog tree he she his theirs mine running jumping swimming dancing hiding shoved placed stung ran fled accidentally fiercely soon victoriously easily red orange yellow green blue rough soft bumpy chalky scaly and yet but for so above below behind down in ouch! wow! oops! hey! no!";
-
-// Splits the string into an array of words
+// Creates two empty sets
 var dataSet = [];
+var finalDataSet = [];
 
 // Reads a text file containing the data
-// Reads a text file containing the data
-document.getElementById('file').onchange = function(){
+function getFileData () {
 
-  var file = this.files[0];
-  var reader = new FileReader();
-  reader.onload = function(progressEvent){
-    $.get(file, function(data) {
-      dataSet = data.split("\n");
-    });
-  };
-  reader.readAsText(file);
+  var fileData = new Array();
+
+  $.get('data.txt', function(data) {
+
+    if (noDataSet) { 
+
+      var elements = data.split("\n");
+      for (var i = 0; i < elements.length+1; i++) {
+        fileData.push(elements[i]);
+      }
+
+      noDataSet = false;
+    }
+  });
 
   // DEBUG
-  alert("Data Set: " + dataSet);
+  // alert(fileData);
+
+  return fileData; 
+}
+
+// Trains the network with data from the file
+function trainTheNetwork () {
+  if (isNotTrained) {    
+      /*
+      =============================================================
+                TRAINING OF NETWORK
+      =============================================================
+      */
+      
+      createDataSet();
+
+      // DEBUG
+      // alert(finalDataSet);
+      
+      network.train(finalDataSet, {
+        log: 10,          // Logs the activity of the network every x iterations
+        error: 0.03,      // The desired error state
+        iterations: 10000, // Runs the training data through the network x times
+        rate: 0.3         // The speed of training
+      });
+
+      isNotTrained = false;
+    }
 }
 
 // Categorize the data using predetermined categories
-var finalDataSet = [];
+function createDataSet() {
+  
+  var tempData = Array.from(getFileData());
+  
+  // DEBUG
+  // alert(tempData);
 
-var previous = dataSet[0];
-for (var i = 1; i < dataSet.length; i++) {
-  var blankData = dataSet[i-1].hashCode()/10000000000;
-  var next = dataSet[i];
+  for (var i = 0; i < tempData.length; i++) {
+    dataSet.push(tempData[i]);
+  }
 
-  if (blankData < 0) {blankData = blankData * -1}
-  blank.push(blankData); // Add data for classification
+  var previous = dataSet[0];
+  for (var i = 1; i < dataSet.length; i++) {
+    var blankData = dataSet[i-1].hashCode()/10000000000;
+    var next = dataSet[i];
+
+    if (blankData < 0) {blankData = blankData * -1}
+    blank.push(blankData); // Add data for classification
+
+    // DEBUG
+    // alert("Blank: " + blank);
+
+    // Categorize data
+    // ===========================================================
+    if (i <= 50) { // Nouns
+
+      finalDataSet.push({ input: [blank], output: [1, 0, 0, 0, 0, 0, 0, 0]});
+
+    } else if (i > 50 && i <= 75) { // Pronouns
+
+      finalDataSet.push({ input: [blank], output: [0, 1, 0, 0, 0, 0, 0, 0]});
+
+    } else if (i > 75 && i <= 125) { // Verbs
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 1, 0, 0, 0, 0, 0]});
+
+    } else if (i > 125 && i <= 150) { // Adverbs
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 0, 1, 0, 0, 0, 0]});
+
+    } else if (i > 150 && i <= 200) { // Adjectives
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 0, 0, 1, 0, 0, 0]});
+
+    } else if (i > 200 && i <= 225) { // Conjunctions
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 0, 0, 0, 1, 0, 0]});
+
+    } else if (i > 225 && i <= 250) { // Prepositions
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 0, 0, 0, 0, 1, 0]});
+
+    } else { // Interjections
+
+      finalDataSet.push({ input: [blank], output: [0, 0, 0, 0, 0, 0, 0, 1]});
+
+    }
+    // ==========================================================
+    blank.pop(); // Prepares data slot for next piece of data
+    previous = next;
+  }
 
   // DEBUG
-  // alert("Blank: " + blank);
-
-  // Categorize data
-  // ===========================================================
-  if (i <= 50) { // Nouns
-
-    finalDataSet.push({ input: [blank], output: [1,0,0,0,0,0,0,0]});
-
-  } else if (i > 50 && i <= 75) { // Pronouns
-
-    finalDataSet.push({ input: [blank], output: [0,1,0,0,0,0,0,0]});
-
-  } else if (i > 75 && i <= 125) { // Verbs
-
-    finalDataSet.push({ input: [blank], output: [0,0,1,0,0,0,0,0]});
-
-  } else if (i > 125 && i <= 150) { // Adverbs
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,1,0,0,0,0]});
-
-  } else if (i > 150 && i <= 200) { // Adjectives
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,1,0,0,0]});
-
-  } else if (i > 200 && i <= 225) { // Conjunctions
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,1,0,0]});
-
-  } else if (i > 225 && i <= 250) { // Prepositions
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,0,1,0]});
-
-  } else { // Interjections
-
-    finalDataSet.push({ input: [blank], output: [0,0,0,0,0,0,0,1]});
-
-  }
-  // ==========================================================
-  blank.pop(); // Prepares data slot for next piece of data
-  previous = next;
+  alert("Final Data Set Created!");
+  alert("Final Data Set Size: " + finalDataSet.length);
 }
-
-// DEBUG
-// alert("Final Data Set Size: " + finalDataSet.length);
 
 /*
   =============================================================
@@ -169,6 +212,7 @@ hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
 var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, outputLayer]);
 
 // Tells the script whether the network has been trained
+var noDataSet = true;
 var isNotTrained = true;
 
 /*
@@ -290,25 +334,10 @@ function displayResult (test, results) {
 document.getElementById('result').innerHTML = "[Result]";
 document.body.style.color = "black";
 
+
 // For Future Tests:
 testForPart = function () {
-
-  if (isNotTrained) {
-    /*
-    =============================================================
-              TRAINING OF NETWORK
-    =============================================================
-    */
-
-    network.train(finalDataSet, {
-      log: 10,          // Logs the activity of the network every x iterations
-      error: 0.03,      // The desired error state
-      iterations: 10000, // Runs the training data through the network x times
-      rate: 0.3         // The speed of training
-    });
-
-    isNotTrained = false;
-  }
+  trainTheNetwork();
 
   var data = document.getElementById('value').value;
   var preResult = network.activate([data.hashCode()]);
