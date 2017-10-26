@@ -45,6 +45,27 @@ Array.prototype.compareArray = function (array) {
 
 /*
   =============================================================
+            CREATION OF NETWORK
+  =============================================================
+*/
+
+// For network:
+var inputLayer = new neataptic.Layer.Dense(1);
+var hiddenLayer = new neataptic.Layer.Dense(9);
+var outputLayer = new neataptic.Layer.Dense(8);
+
+inputLayer.connect(hiddenLayer);   // Connects inputs to the hidden layer
+hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
+
+// Network itself:
+var myNetwork = new neataptic.architect.Construct([inputLayer, hiddenLayer, outputLayer]);
+
+// Tells the script whether the network has been trained
+var noDataSet = true;
+var isNotTrained = true;
+
+/*
+  =============================================================
             CREATION OF DATA SET
   =============================================================
 */
@@ -74,9 +95,9 @@ var blank = [];                           // Blank Category
   =============================================================
 */
 
-// Creates two empty sets
-var dataSet = [];
-var finalDataSet = [];
+// Creates two empty sets:
+var dataSet = [];      // Contains human-readable data
+var finalDataSet = []; // Contains computer-readable data
 
 // Reads a text file containing the data
 function getFileData () {
@@ -100,31 +121,6 @@ function getFileData () {
   // alert(fileData);
 
   return fileData; 
-}
-
-// Trains the network with data from the file
-function trainTheNetwork () {
-  if (isNotTrained) {    
-      /*
-      =============================================================
-                TRAINING OF NETWORK
-      =============================================================
-      */
-      
-      createDataSet();
-
-      // DEBUG
-      // alert(finalDataSet);
-      
-      network.train(finalDataSet, {
-        log: 10,          // Logs the activity of the network every x iterations
-        error: 0.03,      // The desired error state
-        iterations: 10000, // Runs the training data through the network x times
-        rate: 0.3         // The speed of training
-      });
-
-      isNotTrained = false;
-    }
 }
 
 // Categorize the data using predetermined categories
@@ -191,30 +187,36 @@ function createDataSet() {
   }
 
   // DEBUG
-  alert("Final Data Set Created!");
-  alert("Final Data Set Size: " + finalDataSet.length);
+  // alert("Final Data Set Created!");
+  // alert("Final Data Set Size: " + finalDataSet.length);
 }
 
-/*
-  =============================================================
-            CREATION OF NETWORK
-  =============================================================
-*/
+// Trains the network with data from the file and user defined data
+function trainTheNetwork () {
+  if (isNotTrained) {    
+    /*
+    =============================================================
+              TRAINING OF NETWORK
+    =============================================================
+    */
+      
+    createDataSet(); // Adds data from the file into the computer-readable data
 
-// For network:
-var inputLayer = new neataptic.Layer.Dense(1);
-var hiddenLayer = new neataptic.Layer.Dense(9);
-var outputLayer = new neataptic.Layer.Dense(8);
+    // DEBUG
+    // alert(finalDataSet);
+    
+    var trainOptions = {
+      log: 10,          // Logs the activity of the network every x iterations         
+      error: 0.03,      // The desired error state
+      iterations: 10000, // Runs the training data through the network x times
+      rate: 0.3         // The speed of training
+    };
 
-inputLayer.connect(hiddenLayer);   // Connects inputs to the hidden layer
-hiddenLayer.connect(outputLayer);  // Connects hidden layer to the output
+    myNetwork.train(finalDataSet, trainOptions);
 
-// Network itself:
-var network = new neataptic.architect.Construct([inputLayer, hiddenLayer, outputLayer]);
-
-// Tells the script whether the network has been trained
-var noDataSet = true;
-var isNotTrained = true;
+    isNotTrained = false;
+  }
+}
 
 /*
   =============================================================
@@ -222,7 +224,7 @@ var isNotTrained = true;
   =============================================================
 */
 
-// Assigns each part of the pre-results to 1 or 0
+// Assigns each part of the pre-results of a user input to 1 or 0
 function categorizeResult (preResults) {
 
   var results = [];
@@ -335,17 +337,18 @@ function displayResult (test, results) {
 document.getElementById('result').innerHTML = "[Result]";
 document.body.style.color = "black";
 
-
 // For Future Tests:
+// User-input testing
 testForPart = function () {
   trainTheNetwork();
 
   var data = document.getElementById('value').value;
-  var preResult = network.activate([data.hashCode()]);
+  var preResult = myNetwork.activate([data.hashCode()]);
   var result = categorizeResult(preResult);
   displayResult(data, result);
 }
 
+// User-input training
 userTrain = function () {
   var nounBox = document.getElementById('noun').checked;
   var pronounBox = document.getElementById('pronoun').checked;
