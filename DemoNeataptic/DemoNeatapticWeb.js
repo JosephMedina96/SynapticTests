@@ -74,8 +74,6 @@ var blank = [];                           // Blank Category
   =============================================================
 */
 
-// var data = "paper nail stapler chair house boy girl cat dog tree he she his theirs mine running jumping swimming dancing hiding shoved placed stung ran fled accidentally fiercely soon victoriously easily red orange yellow green blue rough soft bumpy chalky scaly and yet but for so above below behind down in ouch! wow! oops! hey! no!";
-
 // Creates two empty sets
 var dataSet = [];
 var finalDataSet = [];
@@ -90,7 +88,7 @@ function getFileData () {
     if (noDataSet) { 
 
       var elements = data.split("\n");
-      for (var i = 0; i < elements.length; i++) {
+      for (var i = 0; i < elements.length+1; i++) {
         fileData.push(elements[i]);
       }
 
